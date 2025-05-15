@@ -1,12 +1,15 @@
 package main
 
 import (
+	"api/configs"
 	"api/internal/hello"
 	"fmt"
 	"net/http"
 )
 
 func main() {
+	conf := configs.LoadConfig()
+	println(conf.Db.Dsn)
 	router := http.NewServeMux()
 	hello.NewHelloHandler(router)
 
