@@ -1,18 +1,15 @@
 package main
 
 import (
-	"api/configs"
-	"api/internal/hello"
+	"api/internal/auth"
 	"fmt"
 	"net/http"
 )
 
 func main() {
-	conf := configs.LoadConfig()
-	println(conf.Db.Dsn)
+	// conf := configs.LoadConfig()
 	router := http.NewServeMux()
-	hello.NewHelloHandler(router)
-
+	auth.NewAuthHandler(router)
 	server := http.Server{
 		Addr:    ":8081",
 		Handler: router,
