@@ -3,6 +3,7 @@ package main
 import (
 	"api/configs"
 	"api/internal/auth"
+	"api/internal/link"
 	"api/pkg/db"
 	"fmt"
 	"net/http"
@@ -15,6 +16,7 @@ func main() {
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: conf,
 	})
+	link.NewLinkHandler(router, link.LinkHandlerDeps{})
 	server := http.Server{
 		Addr:    ":8081",
 		Handler: router,
