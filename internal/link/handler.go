@@ -2,8 +2,8 @@ package link
 
 import (
 	"api/configs"
-	"api/internal/stat"
 	"api/internal/user"
+	"api/pkg/di"
 	"api/pkg/middleware"
 	"api/pkg/req"
 	"api/pkg/res"
@@ -16,14 +16,14 @@ import (
 
 type LinkHandlerDeps struct {
 	LinkRepository *LinkRepository
-	StatRepository *stat.StatRepository
+	StatRepository *di.IStatRepository
 	Config         *configs.Config
 	UserRepository *user.UserRepository
 }
 
 type LinkHandler struct {
 	LinkRepository *LinkRepository
-	StatRepository *stat.StatRepository
+	StatRepository *di.IStatRepository
 	Config         *configs.Config
 	UserRepository *user.UserRepository
 }
