@@ -7,11 +7,31 @@ import (
 	"api/internal/user"
 	"api/pkg/db"
 	"api/pkg/middleware"
+	"context"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 func main() {
+	ctx := context.Background()
+	ctxWithTimeout, cencel := context.WithTimeout(ctx, 4*time.Second)
+	defer cencel()
+
+	done := make(chan struct{})
+	go func() {
+		time.Sleep(3 * time.Second)
+		close(done)
+	}()
+
+	select {
+	case <-done:
+		fmt.Println("Done task")
+	case <-ctxWithTimeout.Done():
+		fmt.Println("Timeout")
+	}
+}
+func main2() {
 	conf := configs.LoadConfig()
 	db := db.NewDb(conf)
 	router := http.NewServeMux()
