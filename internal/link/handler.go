@@ -2,6 +2,7 @@ package link
 
 import (
 	"api/configs"
+	"api/internal/stat"
 	"api/internal/user"
 	"api/pkg/middleware"
 	"api/pkg/req"
@@ -15,12 +16,14 @@ import (
 
 type LinkHandlerDeps struct {
 	LinkRepository *LinkRepository
+	StatRepository *stat.StatRepository
 	Config         *configs.Config
 	UserRepository *user.UserRepository
 }
 
 type LinkHandler struct {
 	LinkRepository *LinkRepository
+	StatRepository *stat.StatRepository
 	Config         *configs.Config
 	UserRepository *user.UserRepository
 }
@@ -28,6 +31,7 @@ type LinkHandler struct {
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 	handler := &LinkHandler{
 		LinkRepository: deps.LinkRepository,
+		StatRepository: deps.StatRepository,
 	}
 	router.Handle("POST /link", middleware.IsAuthed(handler.Create(), deps.Config, deps.UserRepository))
 	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config, deps.UserRepository))
@@ -118,6 +122,7 @@ func (handler *LinkHandler) GoTo() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
+		handler.StatRepository.AddClick(link.ID)
 		http.Redirect(w, r, link.Url, http.StatusTemporaryRedirect)
 	}
 }
