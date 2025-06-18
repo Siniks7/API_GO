@@ -5,6 +5,7 @@ import (
 	"api/pkg/middleware"
 	"api/pkg/req"
 	"api/pkg/res"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -56,6 +57,10 @@ func (handler *LinkHandler) Create() http.HandlerFunc {
 
 func (handler *LinkHandler) Update() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		email, ok := r.Context().Value(middleware.ContextEmailKey).(string)
+		if ok {
+			fmt.Println(email)
+		}
 		body, err := req.HandleBody[LinkUpdateRequest](&w, r)
 		if err != nil {
 			return
