@@ -16,14 +16,14 @@ import (
 
 type LinkHandlerDeps struct {
 	LinkRepository *LinkRepository
-	StatRepository *di.IStatRepository
+	StatRepository di.IStatRepository
 	Config         *configs.Config
 	UserRepository *user.UserRepository
 }
 
 type LinkHandler struct {
 	LinkRepository *LinkRepository
-	StatRepository *di.IStatRepository
+	StatRepository di.IStatRepository
 	Config         *configs.Config
 	UserRepository *user.UserRepository
 }
