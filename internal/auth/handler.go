@@ -48,6 +48,10 @@ func (handler *AuthHandler) Register() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		handler.AuthService.Register(body.Email, body.Password, body.Name)
+		data, err := handler.AuthService.Register(body.Email, body.Password, body.Name)
+		if err != nil {
+			return
+		}
+		res.Json(w, data, 201)
 	}
 }
