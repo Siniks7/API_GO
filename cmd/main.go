@@ -31,6 +31,7 @@ func main() {
 		StatRepository: statRepository,
 	})
 
+	// Handlers
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config:      conf,
 		AuthService: authService,
@@ -38,6 +39,11 @@ func main() {
 	link.NewLinkHandler(router, link.LinkHandlerDeps{
 		LinkRepository: linkRepository,
 		EventBus:       eventBus,
+		Config:         conf,
+		UserRepository: userRepository,
+	})
+	stat.NewStatHandler(router, stat.StatHandlerDeps{
+		StatRepository: statRepository,
 		Config:         conf,
 		UserRepository: userRepository,
 	})
