@@ -2,6 +2,7 @@ package link
 
 import (
 	"api/configs"
+	"api/internal/user"
 	"api/pkg/middleware"
 	"api/pkg/req"
 	"api/pkg/res"
@@ -15,22 +16,24 @@ import (
 type LinkHandlerDeps struct {
 	LinkRepository *LinkRepository
 	Config         *configs.Config
+	UserRepository *user.UserRepository
 }
 
 type LinkHandler struct {
 	LinkRepository *LinkRepository
 	Config         *configs.Config
+	UserRepository *user.UserRepository
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 	handler := &LinkHandler{
 		LinkRepository: deps.LinkRepository,
 	}
-	router.Handle("POST /link", middleware.IsAuthed(handler.Create(), deps.Config))
-	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config))
-	router.Handle("DELETE /link/{id}", middleware.IsAuthed(handler.Delete(), deps.Config))
+	router.Handle("POST /link", middleware.IsAuthed(handler.Create(), deps.Config, deps.UserRepository))
+	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config, deps.UserRepository))
+	router.Handle("DELETE /link/{id}", middleware.IsAuthed(handler.Delete(), deps.Config, deps.UserRepository))
 	router.HandleFunc("GET /{hash}", handler.GoTo())
-	router.Handle("GET /link", middleware.IsAuthed(handler.GetAll(), deps.Config))
+	router.Handle("GET /link", middleware.IsAuthed(handler.GetAll(), deps.Config, deps.UserRepository))
 }
 
 func (handler *LinkHandler) Create() http.HandlerFunc {

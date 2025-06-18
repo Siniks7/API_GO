@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"api/configs"
+	"api/internal/user"
 	"api/pkg/jwt"
 	"context"
 	"net/http"
@@ -19,7 +20,7 @@ func writeUnauthed(w http.ResponseWriter) {
 	w.Write([]byte(http.StatusText(http.StatusUnauthorized)))
 }
 
-func IsAuthed(next http.Handler, config *configs.Config) http.Handler {
+func IsAuthed(next http.Handler, config *configs.Config, userRepository *user.UserRepository) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authedHeader := r.Header.Get("Authorization")
 		if !strings.HasPrefix(authedHeader, "Bearer ") {
@@ -29,6 +30,11 @@ func IsAuthed(next http.Handler, config *configs.Config) http.Handler {
 		token := strings.TrimPrefix(authedHeader, "Bearer ")
 		isValid, data := jwt.NewJWT(config.Auth.Secret).Parse(token)
 		if !isValid {
+			writeUnauthed(w)
+			return
+		}
+		_, err := userRepository.FindByEmail(data.Email)
+		if err != nil {
 			writeUnauthed(w)
 			return
 		}
