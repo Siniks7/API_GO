@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/internal/auth"
+	"api/internal/user"
 	"bytes"
 	"encoding/json"
 	"io"
@@ -16,7 +17,7 @@ import (
 )
 
 func initDb() *gorm.DB {
-	err := godotenv.Load("cmd/.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)
 	}
@@ -27,9 +28,18 @@ func initDb() *gorm.DB {
 	return db
 }
 
+func initData(db *gorm.DB) {
+	db.Create(&user.User{
+		Email:    "siniks7@yandex.ru",
+		Password: "$2a$10$VH1TsTYJPYHaVXytaymna.jrxdguUbSGkRP7Q.yKetnb888dIJ3k6",
+		Name:     "siniks7",
+	})
+}
+
 func TestLoginSuccess(t *testing.T) {
 	// Prepare
 	db := initDb()
+	initData(db)
 	ts := httptest.NewServer(App())
 	defer ts.Close()
 
