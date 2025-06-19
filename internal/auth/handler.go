@@ -49,7 +49,7 @@ func (handler *AuthHandler) Login() http.HandlerFunc {
 		data := LoginResponse{
 			Token: token,
 		}
-		res.Json(w, data, 201)
+		res.Json(w, data, 200)
 	}
 }
 
@@ -74,6 +74,6 @@ func (handler *AuthHandler) Register() http.HandlerFunc {
 		data := RegisterResponse{
 			Token: token,
 		}
-		res.Json(w, data, 200)
+		res.Json(w, data, 201)
 	}
 }
